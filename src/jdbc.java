@@ -4,6 +4,8 @@ import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class jdbc {
     Connection conn = null;
@@ -22,11 +24,24 @@ public class jdbc {
         try
         {
         PreparedStatement stmt = conn.prepareStatement("update employee set EmpName =? where Id=?");
-        stmt.setString(1,"rasmi");
+        stmt.setString(1,"kavya");
         stmt.setInt(2,1);
         int i = stmt.executeUpdate();
         System.out.println(i+"records updated");
-    }
+            ResultSet rs=stmt.executeQuery("select * from employee");
+            List<employeeGetterSetter> users=new ArrayList<employeeGetterSetter>();
+
+            while(rs.next()) {
+                employeeGetterSetter user = new employeeGetterSetter();
+                user.setId(rs.getInt("Id"));
+                user.setName(rs.getString("EmpName"));
+
+
+                users.add(user);
+
+            }
+            System.out.print(users);
+        }
      catch (Exception e) {
         System.out.print("Do not connect to DB - Error:" + e);
     }
@@ -38,7 +53,7 @@ public class jdbc {
         try {
             PreparedStatement stmt1 = conn.prepareStatement("insert into employee (EmpName)values(?)", Statement.RETURN_GENERATED_KEYS);
 
-            stmt1.setString(1, "aarav");
+            stmt1.setString(1, "payal");
 
             int i1 = stmt1.executeUpdate();
             System.out.println(i1 + " records Inserted");
@@ -46,6 +61,8 @@ public class jdbc {
             if (result1 != null && result1.next()) {
                 System.out.println("Generated Emp Id: " + result1.getInt(1));
             }
+
+
         }
         catch (Exception e) {
             System.out.print("Do not connect to DB - Error:" + e);
@@ -84,4 +101,25 @@ public class jdbc {
         }
 
     }
+    public void collable_stmt()
+    {
+
+        try {
+            CallableStatement stmt=conn.prepareCall("{call EmpDetail(?)}");
+            stmt.setInt(1,1);
+
+            //stmt.execute();
+           ResultSet rs = stmt.executeQuery();
+           // System.out.println("successfully");
+            while (rs.next()) {
+                System.out.println(
+                        rs.getString("EmpName") );
+            }
+        }
+        catch (Exception e) {
+            System.out.print("Do not connect to DB - Error:" + e);
+        }
+        }
+
+
 }
