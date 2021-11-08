@@ -24,11 +24,27 @@ public class jdbc {
         try
         {
         PreparedStatement stmt = conn.prepareStatement("update employee set EmpName =? where Id=?");
-        stmt.setString(1,"kavya");
+        stmt.setString(1,"radhekrishna");
         stmt.setInt(2,1);
         int i = stmt.executeUpdate();
         System.out.println(i+"records updated");
             ResultSet rs=stmt.executeQuery("select * from employee");
+            ResultSetMetaData rsmd = rs.getMetaData();
+//getting number of columns in 'rs'
+            int colCount = rsmd.getColumnCount();
+            System.out.println("Number Of Columns : "+colCount);
+            System.out.println("column Details :");
+            for (int i1 = 1; i1 <= colCount; i1++)
+            {
+//getting column name of index 'i'
+                String colName = rsmd.getColumnName(i1);
+//getting column's data type of index 'i'
+                String colType = rsmd.getColumnTypeName(i1);
+                System.out.println(colName+" is of type "+colType);
+            }
+
+
+
             List<employeeGetterSetter> users=new ArrayList<employeeGetterSetter>();
 
             while(rs.next()) {
